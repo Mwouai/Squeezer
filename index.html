@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="fr" >
+<head>
+  <title>Squeezer</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" media="screen" type="text/css" title="Design" href="game.css" />
+</head>
+<body>
+
+
+<canvas id='game' height='540' width='960' ></canvas>
+<script src="lib/jquery.js"></script>
+<script type="text/javascript">
+//Global variables
+	var CANVAS_WIDTH = 960,
+		CANVAS_HEIGHT = 540;
+		c_game = jQuery('#game');
+		ctx = c_game[0].getContext('2d');
+</script>
+
+
+
+<script type="text/javascript" src='http://localhost:1337/socket.io/socket.io.js'></script>
+
+<script src="lib/Prototype.js"></script>
+<script src="lib/function.js"></script>
+
+<script src="client/inputText.web.js"></script>
+<script src="client/btn.web.js"></script>
+<script src="client/Player.web.js"></script>
+<script src="client/Shoot.web.js"></script>
+<script src="common/gameScreen.js"></script>
+<script src="client/GS_mainTitle.web.js"></script>
+<script src="client/GS_pickSqueez.web.js"></script>
+<script src="client/GS_battle.web.js"></script>
+
+<script src="client/game.web.js"></script>
+<script src="client/engine.web.js"></script>
+</body>
+</html>
