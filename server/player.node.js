@@ -13,7 +13,7 @@ var Player = Class.create({
 
 		this.real_speed = 50 * 2.5 / (1000/60);
 		this.speed = this.real_speed;
-
+		console.log('1');
 	},
 	getSocket: function(){
 		return this.socket;
@@ -42,6 +42,8 @@ var Player = Class.create({
 	},
 
 	eKeyDown: function(keyCode){
+		for(var i in this)
+			console.log(i);
 		switch(keyCode){
 			case 38: case 90: // UP
 				this.keys.up = true;

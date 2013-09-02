@@ -38,7 +38,7 @@ var Server = Class.create({
 
 		if(everysecond % (this.FPS/10) == 0){ // 100ms
 			for(var i in players)
-				players[i].getSocket().emit('refreshXY' ,{x : players[i].getX(), y : players[i].getY()} );
+				players[i].getSocket().emit('refreshXY' ,{socketId: i,x : players[i].getX(), y : players[i].getY()} );
 		}
 
 		everysecond++;
@@ -61,9 +61,13 @@ var Server = Class.create({
 	onSocketConnection: function(client) {
 		console.log("Connection to server successful. Player id : " + client.id);
 
-		players[client.id] = new Player(client);
-		client.on('keyDown', players[client.id].eKeyDown);
-		client.on('keyUp', players[client.id].eKeyUp);
+		//NEW PLAYER
+		var p = new Player(client);
+		players[client.id] = p;
+		client.on('keyDown', players[client.id].eKeyDown.bind(p));
+		client.on('keyUp', players[client.id].eKeyUp.bind(p));
+
+		//SEND TO OTHER PLAYER'S
 	}
 });
 
