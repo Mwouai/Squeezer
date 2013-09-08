@@ -11,9 +11,9 @@ var Player = Class.create({
 		this.keys.down = false;
 		this.keys.left = false;
 
-		this.real_speed = 50 * 2.5 / (1000/60);
-		this.speed = this.real_speed;
-		console.log('1');
+		this.linear_speed = 7.5;
+		this.diag_speed = Math.sqrt(this.linear_speed);
+		
 	},
 	getSocket: function(){
 		return this.socket;
@@ -25,6 +25,7 @@ var Player = Class.create({
 		return this.y;
 	},
 	update: function(){
+		//this.speed = 5;
 		if(this.keys.up)
 			this.y -= this.speed;
 		else if(this.keys.down)
@@ -36,14 +37,15 @@ var Player = Class.create({
 			this.x += this.speed;
 
 		if((this.keys.up || this.keys.down) && (this.keys.left || this.keys.right)){
-			this.speed = Math.sqrt(this.real_speed);
+			//console.log(this.x+" et "+this.y);
+			this.speed = this.diag_speed;
 		}else
-			this.speed = this.real_speed;
+			this.speed = this.linear_speed;
+
+		
 	},
 
 	eKeyDown: function(keyCode){
-		for(var i in this)
-			console.log(i);
 		switch(keyCode){
 			case 38: case 90: // UP
 				this.keys.up = true;
@@ -60,6 +62,7 @@ var Player = Class.create({
 		}
 	},
 	eKeyUp: function(keyCode){
+		console.log('lache');
 		switch(keyCode){
 			case 38: case 90: // UP
 				this.keys.up = false;

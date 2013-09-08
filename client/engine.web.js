@@ -18,16 +18,16 @@ var Engine = Class.create({
 	},
 	gameLoop: function(){
 		//AUTO RESIZE THE CANVAS
-	  this.autoResize();
-			
-			//DRAW FPS
-	  this.txtFPS = Math.round(1000/this.ms,0)+" fps";
-	  Helper.drawText(this.txtFPS, null, null, 910, 20)
+	  this.autoResize();	
 
 	  //GAME ENGINE
 	  this.update(); // each 16ms
 	  this.draw();
-	  
+
+	  //DRAW FPS
+	  this.txtFPS = Math.round(1000/this.ms,0)+" fps";
+	  Helper.drawText(this.txtFPS, "#fff", null, 910, 20);
+
 	  //Interval entre les deux tick
 	  this.tick = new Date().getTime();
 	  this.lostTime = this.tick - this.prev_tick;
@@ -37,8 +37,11 @@ var Engine = Class.create({
 	  else
 		this.ms = this.milliWait - (this.milliWait - this.lostTime);
 
-	  if(this.ms < 0)
-		this.ms = 0;
+	  if(this.ms < 0){
+	  	this.ms = 0;
+	  	console.log('BU');
+	  }
+		
 	  this.prev_tick = new Date().getTime();
 
 	  setTimeout(this.gameLoop.bind(this), this.ms);

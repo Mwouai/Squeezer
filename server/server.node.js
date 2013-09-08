@@ -10,7 +10,7 @@ var Server = Class.create({
 	initialize: function(port) {
 		this.port = port;
 		this.socket = io.listen(port);
-		this.gameInfos = {};
+		this.socket.set('log level', 1); // reduce logging
 
 		this.FPS = 20;
 		this.milliWait = 1000/this.FPS;
@@ -19,7 +19,7 @@ var Server = Class.create({
 		this.ms = this.milliWait;
 		this.serverLoop();
 
-		this.socket.on("connection", this.onSocketConnection.bind(this));
+		this.socket.on("connection", this.onSocketConnection);
 	},
 	update: function(){
 		for(var i in players){
@@ -37,8 +37,10 @@ var Server = Class.create({
 		}
 
 		if(everysecond % (this.FPS/10) == 0){ // 100ms
-			for(var i in players)
-				players[i].getSocket().emit('refreshXY' ,{socketId: i,x : players[i].getX(), y : players[i].getY()} );
+			//this.socket.emit('sendToAllXY', players);
+			for(var i in players){
+				players[i].getSocket().broadcast.emit('refreshAll' ,{socketId: i,x : players[i].getX(), y : players[i].getY()});
+			}
 		}
 
 		everysecond++;
@@ -60,14 +62,32 @@ var Server = Class.create({
 	
 	onSocketConnection: function(client) {
 		console.log("Connection to server successful. Player id : " + client.id);
+		// Listen for client disconnected
+		client.on("disconnect", server.onClientDisconnect);
 
 		//NEW PLAYER
 		var p = new Player(client);
 		players[client.id] = p;
+		client.emit('setSocketId', client.id);
+
 		client.on('keyDown', players[client.id].eKeyDown.bind(p));
 		client.on('keyUp', players[client.id].eKeyUp.bind(p));
 
+		client.broadcast.emit('playerConnected', p.getSocket().id);
+
+		
 		//SEND TO OTHER PLAYER'S
+		
+	},
+	onClientDisconnect: function(id){
+		delete players[this.id];
+		console.log(this.id +" has disconnect");
+	},
+	onPlayerConnected: function(socketId){
+		console.log('id : '+socketId);
+	},
+	loadEnemies: function(){
+		this.emit('onLoadEnemies', this.players);
 	}
 });
 

@@ -3,8 +3,9 @@ var GS_battle = Class.create({
 	initialize: function(gameScreenObject) {
 		this.gameScreenObject = gameScreenObject;
 		this.eventHandler();
-		
-		
+
+		this.ennemies = [];
+
 		this.click_x = null;
 		this.click_y = null;
 	},
@@ -13,6 +14,10 @@ var GS_battle = Class.create({
 		ctx.fillRect(0, 0, 980, 580);
 
 		gameApp.getPlayer().draw();
+		for(var i in gameApp.getEnemies())
+			gameApp.getEnemy(i).draw();
+	//console.log(gameApp.getEnemies().valueOf());
+	//	console.log("nb:"+gameApp.getEnemies().length);
 
 	},
 	update: function(){
@@ -26,12 +31,10 @@ var GS_battle = Class.create({
 
 		jQuery(document).keydown(function(e){
 			gameApp.getPlayer().eKeyDown(e);
-			gameApp.getSocket().emit('keyDown', e.keyCode);
 		}.bind(this));
 
 		jQuery(document).keyup(function(e){
 			gameApp.getPlayer().eKeyUp(e);
-			gameApp.getSocket().emit('keyUp', e.keyCode);
 		}.bind(this));
 
 	},

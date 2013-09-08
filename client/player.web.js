@@ -1,8 +1,9 @@
 var Player = Class.create({
 
 	initialize: function() {
-		this.x = null;
-		this.y = null;
+		this.socketId = null;
+		this.x = 100;
+		this.y = 270;
 		this.size = 5;
 
 		this.keys = [];
@@ -11,9 +12,9 @@ var Player = Class.create({
 		this.keys.down = false;
 		this.keys.left = false;
 
-
-		this.real_speed = 2.5;
-		this.speed = this.real_speed;
+		this.linear_speed = 2.5;
+		this.diag_speed = Math.sqrt(this.linear_speed);
+		
 
 		this.shoots = []; // LIMIT 5 SHOOT simultaneously
 	},
@@ -29,9 +30,10 @@ var Player = Class.create({
 			this.x += this.speed;
 
 		if((this.keys.up || this.keys.down) && (this.keys.left || this.keys.right)){
-			this.speed = Math.sqrt(this.real_speed);
+			//console.log(this.x+" et "+this.y);
+			this.speed = this.diag_speed;
 		}else
-			this.speed = this.real_speed;
+			this.speed = this.linear_speed;
 	},
 	draw: function(){
 		ctx.beginPath();
@@ -50,6 +52,12 @@ var Player = Class.create({
 
 		ctx.stroke();
 	},
+	getSocketId: function(){
+		return this.socketId;
+	},
+	setSocketId: function(socketId){
+		this.socketId = socketId;
+	},
 	setXY: function(data){
 		this.x = data.x;
 		this.y = data.y;
@@ -61,35 +69,39 @@ var Player = Class.create({
 		return this.y;
 	},
 	eKeyDown: function(e){
-		switch(e.keyCode){
-			case 38: case 90: // UP
-				this.keys.up = true;
-				break;
-			case 39: case 68: // RIGHT
-				this.keys.right = true;
-				break;
-			case 40: case 83: // DOWN
-				this.keys.down = true;
-				break;
-			case 37: case 81: // LEFT
-				this.keys.left = true;
-				break;
+		if(!this.keys.up && (e.keyCode == 90 || e.keyCode == 38)){ // UP
+			this.keys.up = true;
+			gameApp.getSocket().emit('keyDown', e.keyCode);
+		}
+		if(!this.keys.right && (e.keyCode == 68 || e.keyCode == 39)){ // RIGHT
+			this.keys.right = true;
+			gameApp.getSocket().emit('keyDown', e.keyCode);
+		}
+		if(!this.keys.down && (e.keyCode == 83 || e.keyCode == 40)){ // DOWN
+			this.keys.down = true;
+			gameApp.getSocket().emit('keyDown', e.keyCode);
+		}
+		if(!this.keys.left && (e.keyCode == 81 || e.keyCode == 37)){ // LEFT
+			this.keys.left = true;
+			gameApp.getSocket().emit('keyDown', e.keyCode);
 		}
 	},
 	eKeyUp: function(e){
-		switch(e.keyCode){
-			case 38: case 90: // UP
-				this.keys.up = false;
-				break;
-			case 39: case 68: // RIGHT
-				this.keys.right = false;
-				break;
-			case 40: case 83: // DOWN
-				this.keys.down = false;
-				break;
-			case 37: case 81: // LEFT
-				this.keys.left = false;
-				break;
+		if(this.keys.up && (e.keyCode == 90 || e.keyCode == 38)){ // UP
+			this.keys.up = false;
+			gameApp.getSocket().emit('keyUp', e.keyCode);
+		}
+		if(this.keys.right && (e.keyCode == 68 || e.keyCode == 39)){ // RIGHT
+			this.keys.right = false;
+			gameApp.getSocket().emit('keyUp', e.keyCode);
+		}
+		if(this.keys.down && (e.keyCode == 83 || e.keyCode == 40)){ // DOWN
+			this.keys.down = false;
+			gameApp.getSocket().emit('keyUp', e.keyCode);
+		}
+		if(this.keys.left && (e.keyCode == 81 || e.keyCode == 37)){ // LEFT
+			this.keys.left = false;
+			gameApp.getSocket().emit('keyUp', e.keyCode);
 		}
 	},
 	toShoot: function(c_x, c_y){
